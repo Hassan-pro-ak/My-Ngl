@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Messenger | Secure Communication</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Cyberpunk Color Palette & Variables */
+    :root {
+      --neon-blue: #00f3ff;
+      --neon-pink: #ff00ff;
+      --neon-purple: #9d00ff;
+      --neon-green: #00ff9d;
+      --dark-bg: #0a0a16;
+      --darker-bg: #050510;
+      --panel-bg: rgba(16, 16, 32, 0.8);
+      --text-primary: #e0e0ff;
+      --text-secondary: #a0a0ff;
+      --accent-glow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue);
+      --pink-glow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+      --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --font-primary: 'Orbitron', 'Rajdhani', sans-serif;
+      --font-secondary: 'Rajdhani', sans-serif;
+    }
+
+    /* Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-secondary);
+      background: var(--dark-bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(157, 0, 255, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(0, 243, 255, 0.1) 0%, transparent 20%),
+        linear-gradient(to bottom, var(--darker-bg), var(--dark-bg));
+    }
+
+    /* Cyberpunk Scanlines Effect */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.03) 0px,
+        rgba(0, 0, 0, 0.03) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* Header & Navigation */
+    .cyber-header {
+      background: rgba(5, 5, 16, 0.9);
+      border-bottom: 1px solid var(--neon-blue);
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--font-primary);
+      font-weight: 700;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--neon-blue);
+      text-shadow: var(--accent-glow);
+    }
+
+    .logo-icon {
+      color: var(--neon-pink);
+      text-shadow: var(--pink-glow);
+    }
+
+    .cyber-nav {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-family: var(--font-primary);
+      font-weight: 500;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0.5rem 1rem;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-link::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .nav-link:hover::before {
+      left: 100%;
+    }
+
+    .nav-link:hover {
+      color: var(--neon-blue);
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+    }
+
+    .nav-link.active {
+      color: var(--neon-blue);
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+    }
+
+    .nav-link i {
+      margin-right: 0.5rem;
+    }
+
+    .whatsapp-channel {
+      background: linear-gradient(45deg, var(--neon-green), #00cc7a);
+      color: #000;
+      font-weight: 700;
+    }
+
+    .whatsapp-channel:hover {
+      background: linear-gradient(45deg, #00cc7a, var(--neon-green));
+      color: #000;
+      box-shadow: 0 0 15px rgba(0, 255, 157, 0.7);
+    }
+
+    /* Main Content */
+    .cyber-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    /* Cyber Cards */
+    .cyber-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--neon-blue);
+      border-radius: 8px;
+      padding: 2rem;
+      box-shadow: 
+        0 0 15px rgba(0, 243, 255, 0.2),
+        inset 0 0 15px rgba(0, 243, 255, 0.05);
+      backdrop-filter: blur(5px);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cyber-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink), var(--neon-purple));
+    }
+
+    .cyber-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 
+        0 0 20px rgba(0, 243, 255, 0.3),
+        inset 0 0 20px rgba(0, 243, 255, 0.1);
+    }
+
+    .card-title {
+      font-family: var(--font-primary);
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: var(--neon-blue);
+      text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .card-title i {
+      color: var(--neon-pink);
+    }
+
+    /* Form Elements */
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .cyber-label {
+      display: block;
+      font-family: var(--font-primary);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .cyber-input, .cyber-textarea {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      background: rgba(10, 10, 20, 0.7);
+      border: 1px solid var(--neon-purple);
+      border-radius: 4px;
+      color: var(--text-primary);
+      font-family: var(--font-secondary);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .cyber-input:focus, .cyber-textarea:focus {
+      outline: none;
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+    }
+
+    .cyber-textarea {
+      resize: vertical;
+      min-height: 140px;
+    }
+
+    .char-counter {
+      text-align: right;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+      color: var(--text-secondary);
+    }
+
+    .char-counter.warning {
+      color: #ffaa00;
+    }
+
+    .char-counter.danger {
+      color: #ff5555;
+      text-shadow: 0 0 5px rgba(255, 85, 85, 0.5);
+    }
+
+    /* Buttons */
+    .cyber-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .cyber-btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      font-family: var(--font-primary);
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cyber-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .cyber-btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary {
+      background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+      color: #000;
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.7);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--neon-purple);
+    }
+
+    .btn-secondary:hover {
+      color: var(--neon-blue);
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+    }
+
+    /* Notices */
+    .cyber-notice {
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-left: 3px solid;
+    }
+
+    .notice-success {
+      background: rgba(0, 255, 157, 0.1);
+      border-left-color: var(--neon-green);
+      color: var(--neon-green);
+    }
+
+    .notice-error {
+      background: rgba(255, 0, 85, 0.1);
+      border-left-color: #ff0055;
+      color: #ff5577;
+    }
+
+    .notice-info {
+      background: rgba(0, 243, 255, 0.1);
+      border-left-color: var(--neon-blue);
+      color: var(--neon-blue);
+    }
+
+    /* Preview Section */
+    .preview-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .message-preview {
+      background: rgba(10, 10, 20, 0.7);
+      border: 1px solid var(--neon-purple);
+      border-radius: 4px;
+      padding: 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-sender {
+      font-family: var(--font-primary);
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: var(--neon-pink);
+      text-shadow: 0 0 5px rgba(255, 0, 255, 0.5);
+    }
+
+    .preview-content {
+      flex: 1;
+      padding: 1rem;
+      background: rgba(5, 5, 15, 0.5);
+      border-radius: 4px;
+      border: 1px solid rgba(157, 0, 255, 0.3);
+      overflow-y: auto;
+    }
+
+    /* Footer */
+    .cyber-footer {
+      text-align: center;
+      padding: 2rem;
+      margin-top: 2rem;
+      border-top: 1px solid rgba(0, 243, 255, 0.3);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .footer-glow {
+      color: var(--neon-blue);
+      text-shadow: 0 0 5px rgba(0, 243, 255, 0.5);
+    }
+
+    /* WhatsApp Channel Section */
+    .whatsapp-section {
+      grid-column: 1 / -1;
+      margin-top: 1rem;
+    }
+
+    .channel-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .qr-code {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-placeholder {
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(45deg, #25D366, #128C7E);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+    }
+
+    .channel-details {
+      flex: 1;
+    }
+
+    .channel-stats {
+      display: flex;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-family: var(--font-primary);
+      font-size: 1.5rem;
+      color: var(--neon-green);
+      text-shadow: 0 0 5px rgba(0, 255, 157, 0.5);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 968px) {
+      .cyber-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .nav-container {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .cyber-nav {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .channel-info {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .cyber-actions {
+        flex-direction: column;
+      }
+      
+      .cyber-btn {
+        justify-content: center;
+      }
+    }
+
+    /* Animations */
+    @keyframes pulse {
+      0% { opacity: 0.7; }
+      50% { opacity: 1; }
+      100% { opacity: 0.7; }
+    }
+
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+      100% { transform: translate(0); }
+    }
+
+    .glitch:hover {
+      animation: glitch 0.3s linear;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header with Navigation -->
+  <header class="cyber-header">
+    <div class="nav-container">
+      <div class="logo">
+        <i class="fas fa-user-secret logo-icon"></i>
+        CYBER MESSENGER
+      </div>
+      <nav class="cyber-nav">
+        <a href="#" class="nav-link active"><i class="fas fa-home"></i> Home</a>
+        <a href="#" class="nav-link"><i class="fas fa-message"></i> Messages</a>
+        <a href="#" class="nav-link"><i class="fas fa-user-group"></i> Contacts</a>
+        <a href="#" class="nav-link"><i class="fas fa-shield-alt"></i> Security</a>
+        <a href="#" class="nav-link whatsapp-channel"><i class="fab fa-whatsapp"></i> WhatsApp Channel</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="cyber-container">
+    <!-- Message Form -->
+    <section class="cyber-card">
+      <h2 class="card-title"><i class="fas fa-paper-plane"></i> SEND SECURE MESSAGE</h2>
+      <form id="msgForm" autocomplete="off">
+        <div class="input-group">
+          <label for="name" class="cyber-label">Your Identity (Optional)</label>
+          <input type="text" id="name" class="cyber-input" maxlength="100" placeholder="Enter your alias">
+        </div>
+
+        <div class="input-group">
+          <label for="message" class="cyber-label">Encrypted Message</label>
+          <textarea id="message" class="cyber-textarea" rows="6" maxlength="2000" placeholder="Type your secure message..." required></textarea>
+          <div class="char-counter" id="chars">0/2000</div>
+        </div>
+
+        <div class="cyber-actions">
+          <button id="sendBtn" class="cyber-btn btn-primary" type="submit">
+            <i class="fas fa-lock"></i> ENCRYPT & SEND
+          </button>
+          <button id="clearBtn" class="cyber-btn btn-secondary" type="button">
+            <i class="fas fa-eraser"></i> CLEAR
+          </button>
+        </div>
+
+        <div id="notice" class="cyber-notice"></div>
+      </form>
+    </section>
+
+    <!-- Message Preview -->
+    <section class="cyber-card preview-container">
+      <h2 class="card-title"><i class="fas fa-eye"></i> MESSAGE PREVIEW</h2>
+      <div class="message-preview">
+        <div class="preview-sender" id="pname">ANONYMOUS</div>
+        <div class="preview-content" id="pmsg">Your encrypted message will appear here...</div>
+      </div>
+    </section>
+
+    <!-- WhatsApp Channel -->
+    <section class="cyber-card whatsapp-section">
+      <h2 class="card-title"><i class="fab fa-whatsapp"></i> WHATSAPP CHANNEL</h2>
+      <p>Join our secure WhatsApp channel for real-time updates and direct communication.</p>
+      
+      <div class="channel-info">
+        <div class="qr-code">
+          <div class="qr-placeholder">
+            <i class="fab fa-whatsapp" style="font-size: 3rem;"></i>
+          </div>
+        </div>
+        
+        <div class="channel-details">
+          <h3 style="color: var(--neon-green); margin-bottom: 0.5rem;">Cyber Messenger Updates</h3>
+          <p style="margin-bottom: 1rem;">Get the latest security updates, feature releases, and direct support through our official WhatsApp channel.</p>
+          
+          <div class="channel-stats">
+            <div class="stat">
+              <div class="stat-value">5.2K</div>
+              <div class="stat-label">Subscribers</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">98%</div>
+              <div class="stat-label">Active</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">24/7</div>
+              <div class="stat-label">Support</div>
+            </div>
+          </div>
+          
+          <button class="cyber-btn btn-primary" style="margin-top: 1.5rem;">
+            <i class="fab fa-whatsapp"></i> JOIN CHANNEL
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="cyber-footer">
+    <p><span class="footer-glow">CYBER MESSENGER</span> | End-to-End Encrypted Communication | No Data Logging</p>
+    <p style="margin-top: 0.5rem;">&copy; 2023 Cyber Systems | All Rights Reserved</p>
+  </footer>
+
+  <script>
+    (() => {
+      const form = document.getElementById("msgForm");
+      const nameInput = document.getElementById("name");
+      const msgInput = document.getElementById("message");
+      const sendBtn = document.getElementById("sendBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const notice = document.getElementById("notice");
+      const chars = document.getElementById("chars");
+      const pname = document.getElementById("pname");
+      const pmsg = document.getElementById("pmsg");
+
+      const MIN_INTERVAL = 3000;
+      let lastSend = 0;
+
+      function setNotice(text, type = "") {
+        notice.textContent = text;
+        notice.className = "cyber-notice";
+        
+        if (type === "success") {
+          notice.classList.add("notice-success");
+          notice.innerHTML = `<i class="fas fa-check-circle"></i> ${text}`;
+        } else if (type === "error") {
+          notice.classList.add("notice-error");
+          notice.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${text}`;
+        } else if (type === "info") {
+          notice.classList.add("notice-info");
+          notice.innerHTML = `<i class="fas fa-info-circle"></i> ${text}`;
+        } else {
+          notice.innerHTML = text;
+        }
+      }
+
+      function updatePreview() {
+        pname.textContent = (nameInput.value.trim() || "ANONYMOUS").toUpperCase();
+        pmsg.textContent = msgInput.value.trim() || "Your encrypted message will appear here...";
+        chars.textContent = `${msgInput.value.length}/2000`;
+        
+        // Update character counter style
+        chars.className = "char-counter";
+        if (msgInput.value.length > 1800) {
+          chars.classList.add("danger");
+        } else if (msgInput.value.length > 1500) {
+          chars.classList.add("warning");
+        }
+      }
+
+      msgInput.addEventListener("input", updatePreview);
+      nameInput.addEventListener("input", updatePreview);
+
+      clearBtn.onclick = () => {
+        nameInput.value = "";
+        msgInput.value = "";
+        updatePreview();
+        setNotice("");
+        nameInput.focus();
+      };
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const now = Date.now();
+        if (now - lastSend < MIN_INTERVAL) {
+          setNotice("Security protocol: Please wait before sending another message", "error");
+          return;
+        }
+
+        const name = nameInput.value.trim() || "Anonymous";
+        const message = msgInput.value.trim();
+        if (!message) return setNotice("Encryption requires message content", "error");
+
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ENCRYPTING...';
+        setNotice("Initializing end-to-end encryption...", "info");
+
+        try {
+          // Simulate encryption and API call
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          
+          // In a real app, this would be your actual API endpoint
+          const res = await fetch("/api/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, message })
+          });
+          
+          const j = await res.json();
+          if (!res.ok) throw new Error(j.error || "Transmission failed");
+          
+          setNotice("Message encrypted and transmitted successfully", "success");
+          lastSend = Date.now();
+          msgInput.value = "";
+          updatePreview();
+        } catch (err) {
+          setNotice(`Security breach: ${err.message}`, "error");
+        } finally {
+          sendBtn.disabled = false;
+          sendBtn.innerHTML = '<i class="fas fa-lock"></i> ENCRYPT & SEND';
+        }
+      });
+
+      // Initialize
+      updatePreview();
+      
+      // Add glitch effect to logo on hover
+      document.querySelector('.logo').addEventListener('mouseenter', function() {
+        this.classList.add('glitch');
+      });
+      
+      document.querySelector('.logo').addEventListener('animationend', function() {
+        this.classList.remove('glitch');
+      });
+    })();
+  </script>
+</body>
+  </html>
